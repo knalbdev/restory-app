@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_list_provider.dart';
-import '../services/api_service.dart';
-import 'restaurant_detail_screen.dart';
 import 'restaurant_search_screen.dart';
 import '../widgets/about_developer_dialog.dart';
+import '../widgets/restaurant_card.dart';
 
 class RestaurantListScreen extends StatelessWidget {
   const RestaurantListScreen({super.key});
@@ -83,8 +82,8 @@ class RestaurantListScreen extends StatelessWidget {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) =>
-                  _RestaurantCard(restaurant: restaurants[index]),
+              (context, index) => RestaurantCard(
+                  restaurant: restaurants[index], heroTagPrefix: 'list'),
               childCount: restaurants.length,
             ),
           ),
@@ -128,94 +127,6 @@ class RestaurantListScreen extends StatelessWidget {
               label: const Text('Coba Lagi'),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RestaurantCard extends StatelessWidget {
-  final Restaurant restaurant;
-
-  const _RestaurantCard({required this.restaurant});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => RestaurantDetailScreen(restaurant: restaurant),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Hero(
-                tag: 'restaurant-image-${restaurant.id}',
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    ApiService.imageUrl(restaurant.pictureId, size: 'small'),
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      width: 80,
-                      height: 80,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.restaurant, color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      restaurant.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on,
-                            size: 14, color: Colors.grey),
-                        const SizedBox(width: 2),
-                        Text(
-                          restaurant.city,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, size: 14, color: Colors.amber),
-                        const SizedBox(width: 2),
-                        Text(
-                          restaurant.rating.toString(),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

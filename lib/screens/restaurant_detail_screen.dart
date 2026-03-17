@@ -6,22 +6,28 @@ import '../services/api_service.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final Restaurant restaurant;
+  final String heroTag;
 
-  const RestaurantDetailScreen({super.key, required this.restaurant});
+  const RestaurantDetailScreen({
+    super.key,
+    required this.restaurant,
+    required this.heroTag,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => RestaurantDetailProvider()..fetchDetail(restaurant.id),
-      child: _DetailView(restaurant: restaurant),
+      child: _DetailView(restaurant: restaurant, heroTag: heroTag),
     );
   }
 }
 
 class _DetailView extends StatelessWidget {
   final Restaurant restaurant;
+  final String heroTag;
 
-  const _DetailView({required this.restaurant});
+  const _DetailView({required this.restaurant, required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -92,9 +98,22 @@ class _DetailView extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 260,
             pinned: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(8),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.black38,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
-                tag: 'restaurant-image-${detail.id}',
+                tag: heroTag,
                 child: Image.network(
                   ApiService.imageUrl(detail.pictureId),
                   fit: BoxFit.cover,
