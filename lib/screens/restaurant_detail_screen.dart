@@ -35,7 +35,7 @@ class _DetailView extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             ),
           RestaurantDetailSuccess(restaurant: final detail) =>
-            _buildContent(context, detail, provider),
+            _buildContent(context, detail),
           RestaurantDetailError(message: final message) =>
             _buildError(context, message, provider),
         };
@@ -68,10 +68,9 @@ class _DetailView extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.grey),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
@@ -86,11 +85,7 @@ class _DetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(
-    BuildContext context,
-    RestaurantDetail detail,
-    RestaurantDetailProvider provider,
-  ) {
+  Widget _buildContent(BuildContext context, RestaurantDetail detail) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -105,8 +100,11 @@ class _DetailView extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
                     color: Colors.grey[300],
-                    child: const Icon(Icons.restaurant,
-                        size: 80, color: Colors.grey),
+                    child: const Icon(
+                      Icons.restaurant,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
@@ -128,7 +126,7 @@ class _DetailView extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildMenuSection(context, 'Minuman', detail.menus.drinks),
                   const SizedBox(height: 24),
-                  _buildReviewSection(context, detail, provider),
+                  _buildReviewSection(context, detail),
                   const SizedBox(height: 32),
                 ],
               ),
@@ -157,10 +155,9 @@ class _DetailView extends StatelessWidget {
             Expanded(
               child: Text(
                 '${detail.address}, ${detail.city}',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.grey),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
             ),
           ],
@@ -172,10 +169,9 @@ class _DetailView extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               detail.rating.toString(),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),
@@ -188,12 +184,16 @@ class _DetailView extends StatelessWidget {
       spacing: 8,
       runSpacing: 4,
       children: detail.categories
-          .map((cat) => Chip(
-                label: Text(cat.name,
-                    style: Theme.of(context).textTheme.bodySmall),
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-              ))
+          .map(
+            (cat) => Chip(
+              label: Text(
+                cat.name,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+            ),
+          )
           .toList(),
     );
   }
@@ -204,10 +204,9 @@ class _DetailView extends StatelessWidget {
       children: [
         Text(
           'Deskripsi',
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         _ExpandableText(text: detail.description),
@@ -216,16 +215,18 @@ class _DetailView extends StatelessWidget {
   }
 
   Widget _buildMenuSection(
-      BuildContext context, String title, List<MenuItem> items) {
+    BuildContext context,
+    String title,
+    List<MenuItem> items,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         SizedBox(
@@ -241,25 +242,20 @@ class _DetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewSection(
-    BuildContext context,
-    RestaurantDetail detail,
-    RestaurantDetailProvider provider,
-  ) {
+  Widget _buildReviewSection(BuildContext context, RestaurantDetail detail) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Ulasan Pelanggan',
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         ...detail.customerReviews.map((r) => _ReviewCard(review: r)),
         const SizedBox(height: 16),
-        _AddReviewForm(restaurantId: detail.id, provider: provider),
+        _AddReviewForm(restaurantId: detail.id),
       ],
     );
   }
@@ -320,13 +316,13 @@ class _ReviewCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Text(
-                    review.name.isNotEmpty
-                        ? review.name[0].toUpperCase()
-                        : '?',
+                    review.name.isNotEmpty ? review.name[0].toUpperCase() : '?',
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer),
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -336,17 +332,15 @@ class _ReviewCard extends StatelessWidget {
                     children: [
                       Text(
                         review.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       Text(
                         review.date,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.grey),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey,
+                            ),
                       ),
                     ],
                   ),
@@ -354,8 +348,7 @@ class _ReviewCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(review.review,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(review.review, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ),
@@ -365,9 +358,8 @@ class _ReviewCard extends StatelessWidget {
 
 class _AddReviewForm extends StatefulWidget {
   final String restaurantId;
-  final RestaurantDetailProvider provider;
 
-  const _AddReviewForm({required this.restaurantId, required this.provider});
+  const _AddReviewForm({required this.restaurantId});
 
   @override
   State<_AddReviewForm> createState() => _AddReviewFormState();
@@ -377,7 +369,6 @@ class _AddReviewFormState extends State<_AddReviewForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _reviewController = TextEditingController();
-  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -386,103 +377,109 @@ class _AddReviewFormState extends State<_AddReviewForm> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(RestaurantDetailProvider provider) async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _isSubmitting = true);
-    try {
-      await widget.provider.addReview(
-        id: widget.restaurantId,
-        name: _nameController.text.trim(),
-        review: _reviewController.text.trim(),
+    await provider.addReview(
+      id: widget.restaurantId,
+      name: _nameController.text.trim(),
+      review: _reviewController.text.trim(),
+    );
+    if (!mounted) return;
+    if (provider.reviewError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.reviewError!),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red,
+        ),
       );
-      if (mounted) {
-        _nameController.clear();
-        _reviewController.clear();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Ulasan berhasil ditambahkan!'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal menambahkan ulasan: $e'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+    } else {
+      _nameController.clear();
+      _reviewController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ulasan berhasil ditambahkan!'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tulis Ulasan',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
+    return Consumer<RestaurantDetailProvider>(
+      builder: (context, provider, _) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Tulis Ulasan',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _nameController,
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      labelText: 'Nama',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
+                    validator: (v) => v == null || v.trim().isEmpty
+                        ? 'Nama wajib diisi'
+                        : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _reviewController,
+                    maxLines: 3,
+                    textInputAction: TextInputAction.done,
+                    decoration: const InputDecoration(
+                      labelText: 'Ulasan',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.rate_review_outlined),
+                      alignLabelWithHint: true,
+                    ),
+                    validator: (v) => v == null || v.trim().isEmpty
+                        ? 'Ulasan wajib diisi'
+                        : null,
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: provider.isSubmittingReview
+                          ? null
+                          : () => _submit(provider),
+                      icon: provider.isSubmittingReview
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Icon(Icons.send),
+                      label: Text(
+                        provider.isSubmittingReview
+                            ? 'Mengirim...'
+                            : 'Kirim Ulasan',
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _nameController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Nama',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person_outline),
-                ),
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Nama wajib diisi' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _reviewController,
-                maxLines: 3,
-                textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(
-                  labelText: 'Ulasan',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.rate_review_outlined),
-                  alignLabelWithHint: true,
-                ),
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Ulasan wajib diisi' : null,
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _isSubmitting ? null : _submit,
-                  icon: _isSubmitting
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.send),
-                  label:
-                      Text(_isSubmitting ? 'Mengirim...' : 'Kirim Ulasan'),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -497,34 +494,45 @@ class _ExpandableText extends StatefulWidget {
 }
 
 class _ExpandableTextState extends State<_ExpandableText> {
-  bool _expanded = false;
+  final _expanded = ValueNotifier<bool>(false);
+
+  @override
+  void dispose() {
+    _expanded.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.text,
-          maxLines: _expanded ? null : 4,
-          overflow:
-              _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        GestureDetector(
-          onTap: () => setState(() => _expanded = !_expanded),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              _expanded ? 'Lebih sedikit' : 'Selengkapnya',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w600,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _expanded,
+      builder: (context, isExpanded, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.text,
+              maxLines: isExpanded ? null : 4,
+              overflow:
+                  isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            GestureDetector(
+              onTap: () => _expanded.value = !_expanded.value,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

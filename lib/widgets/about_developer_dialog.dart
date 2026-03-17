@@ -51,8 +51,7 @@ class AboutDeveloperDialog extends StatelessWidget {
             CircleAvatar(
               radius: 52,
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              backgroundImage:
-                  const AssetImage('assets/images/profile.jpg'),
+              backgroundImage: const AssetImage('assets/images/profile.jpg'),
             ),
             const SizedBox(height: 16),
             Text(

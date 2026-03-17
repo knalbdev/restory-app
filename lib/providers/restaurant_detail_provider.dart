@@ -22,8 +22,12 @@ class RestaurantDetailError extends RestaurantDetailState {
 
 class RestaurantDetailProvider extends ChangeNotifier {
   RestaurantDetailState _state = RestaurantDetailInitial();
+  bool _isSubmittingReview = false;
+  String? _reviewError;
 
   RestaurantDetailState get state => _state;
+  bool get isSubmittingReview => _isSubmittingReview;
+  String? get reviewError => _reviewError;
 
   Future<void> fetchDetail(String id) async {
     _state = RestaurantDetailLoading();
@@ -32,7 +36,9 @@ class RestaurantDetailProvider extends ChangeNotifier {
       final detail = await ApiService.getRestaurantDetail(id);
       _state = RestaurantDetailSuccess(detail);
     } catch (e) {
-      _state = RestaurantDetailError(e.toString().replaceFirst('Exception: ', ''));
+      _state = RestaurantDetailError(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
     }
     notifyListeners();
   }
@@ -42,9 +48,15 @@ class RestaurantDetailProvider extends ChangeNotifier {
     required String name,
     required String review,
   }) async {
+    _isSubmittingReview = true;
+    _reviewError = null;
+    notifyListeners();
     try {
-      final reviews =
-          await ApiService.addReview(id: id, name: name, review: review);
+      final reviews = await ApiService.addReview(
+        id: id,
+        name: name,
+        review: review,
+      );
       if (_state is RestaurantDetailSuccess) {
         final current = (_state as RestaurantDetailSuccess).restaurant;
         _state = RestaurantDetailSuccess(
@@ -61,10 +73,12 @@ class RestaurantDetailProvider extends ChangeNotifier {
             customerReviews: reviews,
           ),
         );
-        notifyListeners();
       }
-    } catch (_) {
-      rethrow;
+    } catch (e) {
+      _reviewError = e.toString().replaceFirst('Exception: ', '');
+    } finally {
+      _isSubmittingReview = false;
+      notifyListeners();
     }
   }
 }

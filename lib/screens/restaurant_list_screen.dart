@@ -21,8 +21,7 @@ class RestaurantListScreen extends StatelessWidget {
             tooltip: 'Cari Restoran',
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const RestaurantSearchScreen()),
+              MaterialPageRoute(builder: (_) => const RestaurantSearchScreen()),
             ),
           ),
           IconButton(
@@ -150,8 +149,7 @@ class _RestaurantCard extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                RestaurantDetailScreen(restaurant: restaurant),
+            builder: (_) => RestaurantDetailScreen(restaurant: restaurant),
           ),
         ),
         child: Padding(
@@ -205,8 +203,7 @@ class _RestaurantCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(Icons.star,
-                            size: 14, color: Colors.amber),
+                        const Icon(Icons.star, size: 14, color: Colors.amber),
                         const SizedBox(width: 2),
                         Text(
                           restaurant.rating.toString(),

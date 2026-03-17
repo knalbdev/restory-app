@@ -36,7 +36,8 @@ class RestaurantListProvider extends ChangeNotifier {
       final restaurants = await ApiService.getRestaurants();
       _state = RestaurantListSuccess(restaurants);
     } catch (e) {
-      _state = RestaurantListError(e.toString().replaceFirst('Exception: ', ''));
+      _state =
+          RestaurantListError(e.toString().replaceFirst('Exception: ', ''));
     }
     notifyListeners();
   }
