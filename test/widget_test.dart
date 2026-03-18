@@ -7,6 +7,7 @@ import 'package:restory_app/models/restaurant.dart';
 import 'package:restory_app/providers/favorite_provider.dart';
 import 'package:restory_app/providers/restaurant_list_provider.dart';
 import 'package:restory_app/providers/settings_provider.dart';
+import 'package:restory_app/providers/navigation_provider.dart';
 import 'package:restory_app/screens/favorite_screen.dart';
 import 'package:restory_app/screens/main_screen.dart';
 import 'package:restory_app/screens/settings_screen.dart';
@@ -25,6 +26,7 @@ Widget _buildApp({required Widget home}) {
       ),
       ChangeNotifierProvider(create: (_) => FavoriteProvider.forTest()),
       ChangeNotifierProvider(create: (_) => SettingsProvider()),
+      ChangeNotifierProvider(create: (_) => NavigationProvider()),
     ],
     child: MaterialApp(home: home),
   );

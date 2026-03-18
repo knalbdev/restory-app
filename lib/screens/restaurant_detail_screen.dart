@@ -99,16 +99,29 @@ class _DetailView extends StatelessWidget {
         builder: (context, favProvider, _) {
           final isFav = favProvider.isFavorite(detail.id);
           return FloatingActionButton(
-            onPressed: () => favProvider.toggleFavorite(
-              Restaurant(
-                id: detail.id,
-                name: detail.name,
-                description: detail.description,
-                pictureId: detail.pictureId,
-                city: detail.city,
-                rating: detail.rating,
-              ),
-            ),
+            onPressed: () async {
+              await favProvider.toggleFavorite(
+                Restaurant(
+                  id: detail.id,
+                  name: detail.name,
+                  description: detail.description,
+                  pictureId: detail.pictureId,
+                  city: detail.city,
+                  rating: detail.rating,
+                ),
+              );
+              if (!context.mounted) return;
+              final message = isFav
+                  ? '${detail.name} dihapus dari favorit'
+                  : '${detail.name} ditambahkan ke favorit';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message),
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
             child: Icon(isFav ? Icons.favorite : Icons.favorite_border),
           );
         },

@@ -38,8 +38,10 @@ class SettingsProvider extends ChangeNotifier {
     await prefs.setBool(_keyDailyReminder, value);
     if (value) {
       await scheduleDaily11AM();
+      await registerWorkManagerTask();
     } else {
       await cancelReminder();
+      await cancelWorkManagerTask();
     }
   }
 }

@@ -51,6 +51,29 @@ Future<void> cancelReminder() async {
   await _plugin.cancel(_notifId);
 }
 
+Future<void> registerWorkManagerTask() async {
+  await Workmanager().registerPeriodicTask(
+    dailyReminderTask,
+    dailyReminderTask,
+    frequency: const Duration(hours: 24),
+    initialDelay: _delayUntil11AM(),
+    existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+  );
+}
+
+Future<void> cancelWorkManagerTask() async {
+  await Workmanager().cancelByUniqueName(dailyReminderTask);
+}
+
+Duration _delayUntil11AM() {
+  final now = tz.TZDateTime.now(tz.local);
+  var target = tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
+  if (target.isBefore(now)) {
+    target = target.add(const Duration(days: 1));
+  }
+  return target.difference(now);
+}
+
 tz.TZDateTime _nextInstanceOf11AM() {
   final now = tz.TZDateTime.now(tz.local);
   var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
