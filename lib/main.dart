@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'providers/favorite_provider.dart';
+import 'providers/navigation_provider.dart';
 import 'providers/restaurant_list_provider.dart';
 import 'providers/settings_provider.dart';
 import 'screens/main_screen.dart';
@@ -25,6 +26,7 @@ class RestoryApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RestaurantListProvider()),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, settings, _) {
