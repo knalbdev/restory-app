@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
+import '../providers/favorite_provider.dart';
 import '../providers/restaurant_detail_provider.dart';
 import '../services/api_service.dart';
+import '../widgets/gradient_app_bar.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final Restaurant restaurant;
@@ -55,7 +57,7 @@ class _DetailView extends StatelessWidget {
     RestaurantDetailProvider provider,
   ) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: const GradientAppBar(title: Text('')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -93,6 +95,24 @@ class _DetailView extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, RestaurantDetail detail) {
     return Scaffold(
+      floatingActionButton: Consumer<FavoriteProvider>(
+        builder: (context, favProvider, _) {
+          final isFav = favProvider.isFavorite(detail.id);
+          return FloatingActionButton(
+            onPressed: () => favProvider.toggleFavorite(
+              Restaurant(
+                id: detail.id,
+                name: detail.name,
+                description: detail.description,
+                pictureId: detail.pictureId,
+                city: detail.city,
+                rating: detail.rating,
+              ),
+            ),
+            child: Icon(isFav ? Icons.favorite : Icons.favorite_border),
+          );
+        },
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

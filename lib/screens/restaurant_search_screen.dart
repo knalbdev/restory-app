@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_search_provider.dart';
+import '../widgets/gradient_app_bar.dart';
 import '../widgets/restaurant_card.dart';
 
 class RestaurantSearchScreen extends StatelessWidget {
@@ -35,8 +36,7 @@ class _SearchViewState extends State<_SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
+      appBar: GradientAppBar(
         title: TextField(
           controller: _controller,
           autofocus: true,

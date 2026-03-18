@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
+import 'providers/favorite_provider.dart';
 import 'providers/restaurant_list_provider.dart';
-import 'screens/restaurant_list_screen.dart';
+import 'providers/settings_provider.dart';
+import 'screens/main_screen.dart';
+import 'services/notification_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initNotifications();
+  await Workmanager().initialize(callbackDispatcher);
   runApp(const RestoryApp());
 }
 
@@ -16,14 +23,20 @@ class RestoryApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RestaurantListProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: MaterialApp(
-        title: 'Restory App',
-        debugShowCheckedModeBanner: false,
-        theme: _lightTheme(),
-        darkTheme: _darkTheme(),
-        themeMode: ThemeMode.system,
-        home: const RestaurantListScreen(),
+      child: Consumer<SettingsProvider>(
+        builder: (context, settings, _) {
+          return MaterialApp(
+            title: 'Restory App',
+            debugShowCheckedModeBanner: false,
+            theme: _lightTheme(),
+            darkTheme: _darkTheme(),
+            themeMode: settings.themeMode,
+            home: const MainScreen(),
+          );
+        },
       ),
     );
   }

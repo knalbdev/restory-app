@@ -4,6 +4,7 @@ import '../models/restaurant.dart';
 import '../providers/restaurant_list_provider.dart';
 import 'restaurant_search_screen.dart';
 import '../widgets/about_developer_dialog.dart';
+import '../widgets/gradient_app_bar.dart';
 import '../widgets/restaurant_card.dart';
 
 class RestaurantListScreen extends StatelessWidget {
@@ -11,84 +12,127 @@ class RestaurantListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Restory'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: 'Cari Restoran',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RestaurantSearchScreen()),
+    return Consumer<RestaurantListProvider>(
+      builder: (context, provider, _) {
+        return switch (provider.state) {
+          RestaurantListInitial() || RestaurantListLoading() => Scaffold(
+              appBar: _simpleAppBar(context),
+              body: const Center(child: CircularProgressIndicator()),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'Tentang Developer',
-            onPressed: () => AboutDeveloperDialog.show(context),
-          ),
-        ],
-      ),
-      body: Consumer<RestaurantListProvider>(
-        builder: (context, provider, _) {
-          return switch (provider.state) {
-            RestaurantListInitial() => const SizedBox.shrink(),
-            RestaurantListLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            RestaurantListSuccess(restaurants: final restaurants) =>
-              _buildList(context, restaurants, provider),
-            RestaurantListError(message: final message) =>
-              _buildError(context, message, provider),
-          };
-        },
-      ),
+          RestaurantListSuccess(restaurants: final restaurants) =>
+            _buildSuccess(context, restaurants, provider),
+          RestaurantListError(message: final message) => Scaffold(
+              appBar: _simpleAppBar(context),
+              body: _buildError(context, message, provider),
+            ),
+        };
+      },
     );
   }
 
-  Widget _buildList(
+  GradientAppBar _simpleAppBar(BuildContext context) {
+    return GradientAppBar(
+      title: const Text('Restory'),
+      actions: _actions(context),
+    );
+  }
+
+  List<Widget> _actions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.search),
+        tooltip: 'Cari Restoran',
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const RestaurantSearchScreen()),
+        ),
+      ),
+      IconButton(
+        icon: const Icon(Icons.info_outline),
+        tooltip: 'Tentang Developer',
+        onPressed: () => AboutDeveloperDialog.show(context),
+      ),
+    ];
+  }
+
+  Widget _buildSuccess(
     BuildContext context,
     List<Restaurant> restaurants,
     RestaurantListProvider provider,
   ) {
-    return RefreshIndicator(
-      onRefresh: provider.fetchRestaurants,
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Hey there! 👋',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+    final primary = Theme.of(context).colorScheme.primary;
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: provider.fetchRestaurants,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 160,
+              pinned: true,
+              forceElevated: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(28),
+                ),
+              ),
+              actions: _actions(context),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding:
+                    const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 20),
+                title: const Text(
+                  'Restory',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Where will you eat today?',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                ),
+                background: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(28),
                   ),
-                  const SizedBox(height: 8),
-                ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          primary,
+                          Color.lerp(primary, Colors.black, 0.3)!,
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 52),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: const Text(
+                          'Temukan restoran favoritmu 🍽️',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => RestaurantCard(
-                  restaurant: restaurants[index], heroTagPrefix: 'list'),
-              childCount: restaurants.length,
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 8),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => RestaurantCard(
+                    restaurant: restaurants[index],
+                    heroTagPrefix: 'list',
+                  ),
+                  childCount: restaurants.length,
+                ),
+              ),
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          ],
+        ),
       ),
     );
   }
